@@ -1,0 +1,138 @@
+body { 
+    font-family: 'Montserrat', sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    padding: 20px; 
+    background-color: #f4f4f9; /* Color HEX para evitar oklch */
+    color: #333333;
+}
+
+.container { 
+    background-color: #ffffff; 
+    padding: 30px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    max-width: 800px; 
+    width: 100%; 
+}
+
+/* --- ESTILOS DE LA TABLA - Replicando Imagen 6 --- */
+#data-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 25px; 
+    margin-top: 10px;
+}
+
+/* Barra superior gruesa dorada */
+#data-table thead tr {
+    border-top: 2.5px solid #a37f4c; 
+}
+
+/* Barra inferior gruesa dorada sobre el total */
+#data-table tbody tr:last-child {
+    border-bottom: 2.5px solid #a37f4c;
+}
+
+/* Estilos base para celdas */
+th, td { 
+    padding: 15px 10px; 
+    border-bottom: 1px solid #e0e0e0; /* Líneas finas intermedias */
+}
+
+/* Quitar borde inferior de la última fila de datos */
+#data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* --- ALINEACIONES ESPECÍFICAS DE COLUMNA --- */
+
+/* Columna 1 (Ejes): Alineación a la izquierda */
+#data-table th:first-child,
+#data-table td:first-child {
+    text-align: left;
+    color: #18171c; /* "Ejes" en dorado */
+    font-weight: 550;
+}
+
+/* Columna 2 (Puntos/Números): ALINEACIÓN CENTRADA EXACTA */
+/* Para que los números se centren entre sí y bajo la cabecera, 
+   tanto th como td deben estar centrados. */
+#data-table th:last-child,
+#data-table td:last-child {
+    text-align: center; 
+    font-weight: 600;
+    color: #444444;
+}
+
+/* Ajuste específico para la celda que contiene el input */
+td.punto-val {
+    position: relative;
+    /* Un pequeño padding derecho para dar aire si el número es muy largo */
+    padding-right: 15px; 
+}
+
+/* Estilo para los inputs de edición */
+input.dato { 
+    width: 70px; 
+    padding: 6px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    /* El texto dentro del input también debe estar centrado */
+    text-align: center; 
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #444444;
+}
+input.dato:focus {
+    border-color: #a37f4c;
+    outline: none;
+}
+
+/* Estilo para el texto plano de la captura (PNG) */
+.captura-texto {
+    display: none;
+    text-align: center; /* Centrado para el PNG */
+    font-weight: 600;
+    color: #444444;
+}
+
+/* Fila del TOTAL */
+.total-row td { 
+    font-weight: 700; 
+    font-size: 1.4em; 
+    color: #a37f4c; 
+    text-align: center; /* Total centrado bajo la columna de puntos */
+    padding-top: 20px;
+    border: none; 
+}
+.total-row td:first-child {
+    visibility: hidden; 
+}
+
+/* --- RESTO DE ESTILOS --- */
+.actions { margin-top: 15px; display: flex; gap: 10px; justify-content: center; }
+button { 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    background-color: #0069b4; 
+    color: #ffffff; 
+    border: none; 
+    border-radius: 4px; 
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    transition: background 0.2s;
+}
+button:hover { background-color: #8e6c40; }
+
+#canvas-container { max-width: 500px; margin: 40px auto; }
+
+#table-capture {
+    background-color: #ffffff;
+    padding: 10px;
+}
+
+/* Clase para el modo captura: oculta inputs, muestra texto */
+.modo-captura input.dato { display: none; }
+.modo-captura .captura-texto { display: inline-block; width: 70px; text-align: center; }

@@ -1,0 +1,58 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DICA Varemo - Madurez Digital</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2>Evaluación de Nivel de Madurez Digital</h2>
+    
+    <div id="table-capture">
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Ejes</th>
+                    <th>Puntos</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>SEO local</td><td class="punto-val"><input type="number" class="dato" value="36.25" step="0.01"><span class="captura-texto">36.25</span></td></tr>
+                <tr><td>Web y SEO</td><td class="punto-val"><input type="number" class="dato" value="65" step="0.01"><span class="captura-texto">65.00</span></td></tr>
+                <tr><td>Venta online</td><td class="punto-val"><input type="number" class="dato" value="35" step="0.01"><span class="captura-texto">35.00</span></td></tr>
+                <tr><td>RRSS</td><td class="punto-val"><input type="number" class="dato" value="26.25" step="0.01"><span class="captura-texto">26.25</span></td></tr>
+                <tr><td>Procesos</td><td class="punto-val"><input type="number" class="dato" value="37.5" step="0.01"><span class="captura-texto">37.50</span></td></tr>
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td></td>
+                    <td id="total-val">200.00</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="actions">
+        <button onclick="descargarTabla()">Descargar Tabla PNG</button>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="radarChart"></canvas>
+    </div>
+
+    <div class="actions">
+        <button onclick="descargarGrafico()">Descargar Gráfico PNG</button>
+    </div>
+</div>
+
+<script src="index.js"></script>
+
+</body>
+</html>
