@@ -1,0 +1,13 @@
+# Extensiones de Visual Studio Code
+.vscode/
+
+# Archivos temporales del sistema (Mac y Windows)
+.DS_Store
+Thumbs.db
+
+# Logs de errores
+*.log
+
+# Archivos de respaldo de editores
+*.swp
+*.bak
