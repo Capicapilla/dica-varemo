@@ -21,8 +21,8 @@ const radarChart = new Chart(ctx, {
                 color: '#0069b4',
                 anchor: 'end',
                 align: 'top',
-                offset: 8,
-                font: { family: 'Montserrat', weight: 'bold', size: 16 },
+                offset: 6,
+                font: { family: 'Montserrat', weight: 'bold', size: 12 },
                 formatter: (value) => value.toFixed(2)
             }
         }]
@@ -104,112 +104,26 @@ function descargarTabla() {
 // <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 function descargarGrafico() {
-    const canvasOriginal = document.getElementById('radarChart');
-    const printSize = 1080;
-    
-    // Calculamos escala basada en el ancho real para que sea proporcional
-    const scaleFactor = printSize / canvasOriginal.offsetWidth;
+    const exportScale = 3; // 3x para PNG nítido sin deformar proporciones
+    const originalDpr = radarChart.options.devicePixelRatio || window.devicePixelRatio || 1;
+    const originalAnimation = radarChart.options.animation;
 
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = printSize;
-    tempCanvas.height = printSize;
-    const tempCtx = tempCanvas.getContext('2d');
+    // Subimos resolución interna sin cambiar tamaño visual
+    radarChart.options.devicePixelRatio = exportScale;
+    radarChart.options.animation = false;
+    radarChart.resize();
+    radarChart.update('none');
 
-    // Fondo blanco sólido inicial con total prioridad
-    tempCtx.fillStyle = '#ffffff';
-    tempCtx.fillRect(0, 0, printSize, printSize);
+    const link = document.createElement('a');
+    link.download = 'grafico-madurez-digital-PRO.png';
+    link.href = radarChart.toBase64Image('image/png', 1);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-    const originalOptions = radarChart.options;
-    const originalDataset = radarChart.data.datasets[0];
-
-    const chartRender = new Chart(tempCtx, {
-        type: 'radar',
-        data: JSON.parse(JSON.stringify(radarChart.data)), 
-        options: {
-            ...originalOptions,
-            devicePixelRatio: 1, // Evitamos interferencias del monitor
-            animation: false,
-            responsive: false,
-            maintainAspectRatio: true,
-            
-            // Aumentamos el padding interno para que los nombres largos no se corten
-            layout: { padding: 40 * scaleFactor },
-
-            scales: {
-                r: {
-                    ...originalOptions.scales.r,
-                    // Ocultamos la escala de fondo del 10 al 100 para limpiar el centro
-                    ticks: { display: false }, 
-                    grid: { color: 'rgba(224, 224, 224, 0.3)' },
-                    angleLines: { color: '#e0e0e0' },
-                    
-                    // *** PASO CLAVE 1: RECUPERAR Y ESCALAR LOS NOMBRES (POINTLABELS) ***
-                    pointLabels: { 
-                        display: true, // <--- ¡AQUÍ ESTÁN DE VUELTA!
-                        color: '#333333', 
-                        // Multiplicamos el tamaño de fuente original por el factor de escala
-                        font: { 
-                            size: 13 * scaleFactor, // Puntuación proporcional y grande
-                            weight: '600', 
-                            family: 'Montserrat' 
-                        }
-                    }
-                }
-            },
-
-            plugins: {
-                legend: { display: false },
-                customCanvasBackgroundColor: { color: 'white' },
-                
-                datalabels: {
-                    display: true,
-                    color: '#0069b4', // Color azul
-                    anchor: 'end',
-                    align: 'top',
-                    offset: 10 * scaleFactor, // Separación proporcional
-                    
-                    // *** PASO CLAVE 2: ESCALAR LA PUNTUACIÓN (DATALABELS) ***
-                    font: { 
-                        family: 'Montserrat',
-                        weight: 'bold',
-                        size: 14 * scaleFactor // Puntuación proporcional y grande
-                    },
-                    formatter: (value) => value.toFixed(2) // Solo el número, el nombre ya está
-                }
-            }
-        },
-        
-        plugins: [ChartDataLabels, {
-            id: 'customCanvasBackgroundColor',
-            beforeDraw: (chart) => {
-                const {ctx} = chart;
-                ctx.save();
-                ctx.globalCompositeOperation = 'destination-over';
-                ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, chart.width, chart.height);
-                ctx.restore();
-            },
-            // Mini-plugin extra para escalar grosores de línea y puntos ANTES de dibujar
-            beforeUpdate: (chart) => {
-                const dataset = chart.data.datasets[0];
-                // *** PASO CLAVE 3: ESCALAR GROSORES PROPORCIONALMENTE ***
-                dataset.borderWidth = 2 * scaleFactor; // Grosor proporcional
-                dataset.pointRadius = 4 * scaleFactor; // Tamaño del punto proporcional
-                dataset.pointHoverRadius = 5 * scaleFactor;
-            }
-        }]
-    });
-
-    // Pequeña pausa para asegurar el renderizado HD
-    setTimeout(() => {
-        const link = document.createElement('a');
-        link.download = 'grafico-madurez-digital-PRO.png';
-        link.href = tempCanvas.toDataURL("image/png", 1.0);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Limpiamos la memoria
-        chartRender.destroy();
-    }, 250);
+    // Restauramos estado original
+    radarChart.options.devicePixelRatio = originalDpr;
+    radarChart.options.animation = originalAnimation;
+    radarChart.resize();
+    radarChart.update('none');
 }
