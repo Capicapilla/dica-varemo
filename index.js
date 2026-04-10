@@ -4,6 +4,9 @@ const inputs = document.querySelectorAll('.dato');
 const capturaTextos = document.querySelectorAll('.captura-texto');
 const totalDisplay = document.getElementById('total-val');
 
+// REGISTRAMOS EL PLUGIN (Indispensable para que aparezcan los números)
+Chart.register(ChartDataLabels);
+
 const radarChart = new Chart(ctx, {
     type: 'radar',
     data: {
@@ -11,10 +14,23 @@ const radarChart = new Chart(ctx, {
         datasets: [{
             label: 'Puntos',
             data: [36.25, 65, 35, 26.25, 37.5],
-            backgroundColor: 'rgba(163, 127, 76, 0.2)', 
-            borderColor: 'rgb(163, 127, 76)', 
-            pointBackgroundColor: 'rgb(163, 127, 76)',
-            borderWidth: 2
+            backgroundColor: 'rgba(0, 105, 180, 0.2)', 
+            borderColor: '#0069b4', 
+            pointBackgroundColor: '#0069b4',
+            borderWidth: 2,
+            // CONFIGURACIÓN DE LOS NÚMEROS EN LA WEB
+            datalabels: {
+                color: '#0069b4',
+                anchor: 'end',
+                align: 'top',
+                offset: 5,
+                font: { 
+                    family: 'Montserrat', 
+                    weight: 'bold', 
+                    size: 12 
+                },
+                formatter: (value) => value.toFixed(2)
+            }
         }]
     },
     options: {
@@ -22,8 +38,9 @@ const radarChart = new Chart(ctx, {
             r: { 
                 min: 0, 
                 max: 100,
-                ticks: { color: '#888888', font: { family: 'Montserrat' } },
-                grid: { color: '#e0e0e0' },
+                ticks: { color: 'rgba(224, 224, 224)', 
+                font: { family: 'Montserrat' } },
+                grid: { color: 'rgba(224, 224, 224, 0.7)' },
                 angleLines: { color: '#e0e0e0' },
                 pointLabels: { 
                     color: '#333333', 
@@ -31,7 +48,10 @@ const radarChart = new Chart(ctx, {
                 }
             } 
         },
-        plugins: { legend: { display: false } }
+        plugins: { 
+            legend: { display: false },
+            datalabels: { display: true } // Activa el plugin
+        }
     }
 });
 
@@ -49,38 +69,31 @@ inputs.forEach((input, index) => {
     });
 });
 
-// --- 3. Función: Descargar Tabla PNG (CON LIMPIEZA DE ESTILOS) ---
+// --- 3. Función: Descargar Tabla PNG ---
 function descargarTabla() {
     const container = document.querySelector("#table-capture");
-    
-    // 1. Activar modo captura
     container.classList.add('modo-captura');
 
-    // 2. PARCHE CRÍTICO: Eliminamos temporalmente cualquier estilo que use oklch
-    // Buscamos en todo el documento si hay estilos inyectados que den problemas
     const allElements = container.querySelectorAll('*');
     allElements.forEach(el => {
         const style = window.getComputedStyle(el);
         if (style.color.includes('oklch') || style.backgroundColor.includes('oklch')) {
-            el.style.color = '#333333'; // Forzamos a gris oscuro
-            el.style.backgroundColor = '#ffffff'; // Forzamos a blanco
+            el.style.color = '#333333';
+            el.style.backgroundColor = '#ffffff';
         }
     });
 
     html2canvas(container, {
         backgroundColor: "#ffffff",
-        scale: 3, // Subimos a 3 para que se vea súper nítida
+        scale: 3,
         useCORS: true,
         logging: false,
         onclone: (clonedDoc) => {
-            // Aseguramos que en el clon que usa html2canvas no exista oklch
             const clonedTable = clonedDoc.querySelector('#table-capture');
-            clonedTable.style.color = '#333333';
+            if (clonedTable) clonedTable.style.color = '#333333';
         }
     }).then(canvas => {
         container.classList.remove('modo-captura');
-        
-        // Limpiamos los estilos forzados (para que el usuario siga viendo su diseño original)
         allElements.forEach(el => { el.style.color = ''; el.style.backgroundColor = ''; });
 
         const link = document.createElement('a');
@@ -90,28 +103,77 @@ function descargarTabla() {
         link.click();
         document.body.removeChild(link);
     }).catch(err => {
-        console.error("Error detallado:", err);
+        console.error("Error:", err);
         container.classList.remove('modo-captura');
-        alert("Fallo al generar imagen. Intenta abrirlo en una ventana de Incógnito.");
     });
 }
 
-// --- 4. Función: Descargar Gráfico PNG ---
+// --- 4. Función: Descargar Gráfico PNG (VERSIÓN 1080px HD) ---
 function descargarGrafico() {
-    const canvas = document.getElementById('radarChart');
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-    const tempCtx = tempCanvas.getContext('2d');
+    const canvasOriginal = document.getElementById('radarChart');
+    const printSize = 1080;
     
-    tempCtx.fillStyle = '#ffffff';
-    tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-    tempCtx.drawImage(canvas, 0, 0);
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = printSize;
+    tempCanvas.height = printSize;
+    const tempCtx = tempCanvas.getContext('2d');
 
-    const link = document.createElement('a');
-    link.download = 'grafico-madurez-digital.png';
-    link.href = tempCanvas.toDataURL("image/png");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // --- PASO CLAVE: Forzar fondo blanco inicial ---
+    tempCtx.fillStyle = '#ffffff';
+    tempCtx.fillRect(0, 0, printSize, printSize);
+
+    const chartRender = new Chart(tempCtx, {
+        type: 'radar',
+        data: JSON.parse(JSON.stringify(radarChart.data)), 
+        options: {
+            ...radarChart.options,
+            devicePixelRatio: 1,
+            animation: false,
+            responsive: false,
+            maintainAspectRatio: true,
+            // --- PASO CLAVE 2: Plugin interno para forzar fondo blanco en el render ---
+            plugins: {
+                legend: { display: false },
+                customCanvasBackgroundColor: {
+                    color: 'white',
+                },
+                datalabels: {
+                    display: true,
+                    color: '#0069b4',
+                    anchor: 'end',
+                    align: 'top',
+                    offset: 12,
+                    font: { size: 30, weight: 'bold', family: 'Montserrat' },
+                    formatter: (value) => value.toFixed(2)
+                }
+            }
+        },
+        plugins: [ChartDataLabels, {
+            // Este mini-plugin asegura que el fondo sea blanco antes de dibujar el radar
+            id: 'customCanvasBackgroundColor',
+            beforeDraw: (chart) => {
+                const {ctx} = chart;
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+            }
+        }]
+    });
+
+    setTimeout(() => {
+        const link = document.createElement('a');
+        link.download = 'grafico-madurez-digital-HD.png';
+        
+        // Usamos image/jpeg si quieres asegurar que NO haya transparencias, 
+        // pero image/png con el fondo pintado también funciona perfecto.
+        link.href = tempCanvas.toDataURL("image/png", 1.0);
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        chartRender.destroy();
+    }, 200); // Aumentamos un pelín el tiempo para asegurar el renderizado
 }

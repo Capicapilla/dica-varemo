@@ -1,3 +1,8 @@
+h2 {
+    text-align: center;
+    width: 100%; 
+}
+
 body { 
     font-family: 'Montserrat', sans-serif; 
     display: flex; 
@@ -19,7 +24,7 @@ body {
 
 /* --- ESTILOS DE LA TABLA - Replicando Imagen 6 --- */
 #data-table { 
-    width: 100%; 
+    width: 40%; 
     border-collapse: collapse; 
     margin-bottom: 25px; 
     margin-top: 10px;
@@ -27,12 +32,12 @@ body {
 
 /* Barra superior gruesa dorada */
 #data-table thead tr {
-    border-top: 2.5px solid #a37f4c; 
+    border-top: none; 
 }
 
 /* Barra inferior gruesa dorada sobre el total */
 #data-table tbody tr:last-child {
-    border-bottom: 2.5px solid #a37f4c;
+    border-bottom: 2.5px solid #f2c200;
 }
 
 /* Estilos base para celdas */
@@ -126,12 +131,33 @@ button {
 }
 button:hover { background-color: #8e6c40; }
 
-#canvas-container { max-width: 500px; margin: 40px auto; }
+#canvas-container { 
+    max-width: 500px;
+    margin: 40px auto; 
+}
 
 #table-capture {
     background-color: #ffffff;
     padding: 10px;
+    display: flex;
+    justify-content: center;
 }
+/*CAPI retoques _________________________________________________*/
+
+#data-table thead tr {
+    border-bottom: 2.5px solid #f2c200; 
+    
+}
+#data-table th {
+    padding-bottom: 15px; /* Esto empuja la raya hacia abajo para que el texto respire */
+    border-bottom: none;  /* Quitamos cualquier raya gris que ande por ahí molestando */
+}
+
+td#total-val {
+    color: #f2c200 !important;
+}
+
+
 
 /* Clase para el modo captura: oculta inputs, muestra texto */
 .modo-captura input.dato { display: none; }
