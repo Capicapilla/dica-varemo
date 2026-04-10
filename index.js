@@ -4,7 +4,6 @@ const inputs = document.querySelectorAll('.dato');
 const capturaTextos = document.querySelectorAll('.captura-texto');
 const totalDisplay = document.getElementById('total-val');
 
-// REGISTRAMOS EL PLUGIN (Indispensable para que aparezcan los números)
 Chart.register(ChartDataLabels);
 
 const radarChart = new Chart(ctx, {
@@ -18,17 +17,12 @@ const radarChart = new Chart(ctx, {
             borderColor: '#0069b4', 
             pointBackgroundColor: '#0069b4',
             borderWidth: 2,
-            // CONFIGURACIÓN DE LOS NÚMEROS EN LA WEB
             datalabels: {
                 color: '#0069b4',
                 anchor: 'end',
                 align: 'top',
-                offset: 5,
-                font: { 
-                    family: 'Montserrat', 
-                    weight: 'bold', 
-                    size: 12 
-                },
+                offset: 8,
+                font: { family: 'Montserrat', weight: 'bold', size: 16 },
                 formatter: (value) => value.toFixed(2)
             }
         }]
@@ -38,42 +32,42 @@ const radarChart = new Chart(ctx, {
             r: { 
                 min: 0, 
                 max: 100,
-                ticks: { color: 'rgba(224, 224, 224)', 
-                font: { family: 'Montserrat' } },
+                ticks: { 
+                    color: '#D3D3D3', // <--- CAMBIADO A HEX SÓLIDO (WEB)
+                    backdropColor: 'transparent', // <--- EVITA EL RECUADRO DETRÁS DEL NÚMERO
+                    font: { family: 'Montserrat', size: 10 } 
+                },
                 grid: { color: 'rgba(224, 224, 224, 0.7)' },
                 angleLines: { color: '#e0e0e0' },
                 pointLabels: { 
                     color: '#333333', 
-                    font: { size: 12, weight: '600', family: 'Montserrat' } 
+                    font: { size: 13, weight: '600', family: 'Montserrat' } 
                 }
             } 
         },
         plugins: { 
             legend: { display: false },
-            datalabels: { display: true } // Activa el plugin
+            datalabels: { display: true } 
         }
     }
 });
 
-// --- 2. Lógica de actualización ---
+// --- 2. Lógica de actualización (Sin cambios) ---
 inputs.forEach((input, index) => {
     input.addEventListener('input', () => {
         const val = parseFloat(input.value) || 0;
         const values = Array.from(inputs).map(i => parseFloat(i.value) || 0);
-        
         radarChart.data.datasets[0].data = values;
         radarChart.update();
-        
         totalDisplay.innerText = values.reduce((a, b) => a + b, 0).toFixed(2);
         capturaTextos[index].innerText = val.toFixed(2);
     });
 });
 
-// --- 3. Función: Descargar Tabla PNG ---
+// --- 3. Función: Descargar Tabla PNG (Sin cambios) ---
 function descargarTabla() {
     const container = document.querySelector("#table-capture");
     container.classList.add('modo-captura');
-
     const allElements = container.querySelectorAll('*');
     allElements.forEach(el => {
         const style = window.getComputedStyle(el);
@@ -82,7 +76,6 @@ function descargarTabla() {
             el.style.backgroundColor = '#ffffff';
         }
     });
-
     html2canvas(container, {
         backgroundColor: "#ffffff",
         scale: 3,
@@ -95,7 +88,6 @@ function descargarTabla() {
     }).then(canvas => {
         container.classList.remove('modo-captura');
         allElements.forEach(el => { el.style.color = ''; el.style.backgroundColor = ''; });
-
         const link = document.createElement('a');
         link.download = 'tabla-madurez-digital.png';
         link.href = canvas.toDataURL("image/png");
@@ -108,48 +100,86 @@ function descargarTabla() {
     });
 }
 
-// --- 4. Función: Descargar Gráfico PNG (VERSIÓN 1080px HD) ---
+// *** IMPORTANTE: No olvides tener el script del plugin datalabels en tu HTML ***
+// <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 function descargarGrafico() {
     const canvasOriginal = document.getElementById('radarChart');
     const printSize = 1080;
     
+    // Calculamos escala basada en el ancho real para que sea proporcional
+    const scaleFactor = printSize / canvasOriginal.offsetWidth;
+
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = printSize;
     tempCanvas.height = printSize;
     const tempCtx = tempCanvas.getContext('2d');
 
-    // --- PASO CLAVE: Forzar fondo blanco inicial ---
+    // Fondo blanco sólido inicial con total prioridad
     tempCtx.fillStyle = '#ffffff';
     tempCtx.fillRect(0, 0, printSize, printSize);
+
+    const originalOptions = radarChart.options;
+    const originalDataset = radarChart.data.datasets[0];
 
     const chartRender = new Chart(tempCtx, {
         type: 'radar',
         data: JSON.parse(JSON.stringify(radarChart.data)), 
         options: {
-            ...radarChart.options,
-            devicePixelRatio: 1,
+            ...originalOptions,
+            devicePixelRatio: 1, // Evitamos interferencias del monitor
             animation: false,
             responsive: false,
             maintainAspectRatio: true,
-            // --- PASO CLAVE 2: Plugin interno para forzar fondo blanco en el render ---
+            
+            // Aumentamos el padding interno para que los nombres largos no se corten
+            layout: { padding: 40 * scaleFactor },
+
+            scales: {
+                r: {
+                    ...originalOptions.scales.r,
+                    // Ocultamos la escala de fondo del 10 al 100 para limpiar el centro
+                    ticks: { display: false }, 
+                    grid: { color: 'rgba(224, 224, 224, 0.3)' },
+                    angleLines: { color: '#e0e0e0' },
+                    
+                    // *** PASO CLAVE 1: RECUPERAR Y ESCALAR LOS NOMBRES (POINTLABELS) ***
+                    pointLabels: { 
+                        display: true, // <--- ¡AQUÍ ESTÁN DE VUELTA!
+                        color: '#333333', 
+                        // Multiplicamos el tamaño de fuente original por el factor de escala
+                        font: { 
+                            size: 13 * scaleFactor, // Puntuación proporcional y grande
+                            weight: '600', 
+                            family: 'Montserrat' 
+                        }
+                    }
+                }
+            },
+
             plugins: {
                 legend: { display: false },
-                customCanvasBackgroundColor: {
-                    color: 'white',
-                },
+                customCanvasBackgroundColor: { color: 'white' },
+                
                 datalabels: {
                     display: true,
-                    color: '#0069b4',
+                    color: '#0069b4', // Color azul
                     anchor: 'end',
                     align: 'top',
-                    offset: 12,
-                    font: { size: 30, weight: 'bold', family: 'Montserrat' },
-                    formatter: (value) => value.toFixed(2)
+                    offset: 10 * scaleFactor, // Separación proporcional
+                    
+                    // *** PASO CLAVE 2: ESCALAR LA PUNTUACIÓN (DATALABELS) ***
+                    font: { 
+                        family: 'Montserrat',
+                        weight: 'bold',
+                        size: 14 * scaleFactor // Puntuación proporcional y grande
+                    },
+                    formatter: (value) => value.toFixed(2) // Solo el número, el nombre ya está
                 }
             }
         },
+        
         plugins: [ChartDataLabels, {
-            // Este mini-plugin asegura que el fondo sea blanco antes de dibujar el radar
             id: 'customCanvasBackgroundColor',
             beforeDraw: (chart) => {
                 const {ctx} = chart;
@@ -158,22 +188,28 @@ function descargarGrafico() {
                 ctx.fillStyle = 'white';
                 ctx.fillRect(0, 0, chart.width, chart.height);
                 ctx.restore();
+            },
+            // Mini-plugin extra para escalar grosores de línea y puntos ANTES de dibujar
+            beforeUpdate: (chart) => {
+                const dataset = chart.data.datasets[0];
+                // *** PASO CLAVE 3: ESCALAR GROSORES PROPORCIONALMENTE ***
+                dataset.borderWidth = 2 * scaleFactor; // Grosor proporcional
+                dataset.pointRadius = 4 * scaleFactor; // Tamaño del punto proporcional
+                dataset.pointHoverRadius = 5 * scaleFactor;
             }
         }]
     });
 
+    // Pequeña pausa para asegurar el renderizado HD
     setTimeout(() => {
         const link = document.createElement('a');
-        link.download = 'grafico-madurez-digital-HD.png';
-        
-        // Usamos image/jpeg si quieres asegurar que NO haya transparencias, 
-        // pero image/png con el fondo pintado también funciona perfecto.
+        link.download = 'grafico-madurez-digital-PRO.png';
         link.href = tempCanvas.toDataURL("image/png", 1.0);
-        
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
+        // Limpiamos la memoria
         chartRender.destroy();
-    }, 200); // Aumentamos un pelín el tiempo para asegurar el renderizado
+    }, 250);
 }
