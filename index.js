@@ -19,7 +19,7 @@ const radarChartInicial = new Chart(ctxInicial, {
         labels: ['SEO local', 'Web y SEO', 'Venta online', 'RRSS', 'Procesos'],
         datasets: [{
             label: 'Inicial',
-            data: [36.25, 65, 35, 26.25, 37.5],
+            data: [0, 0, 0, 0, 0],
             backgroundColor: 'rgba(0, 105, 180, 0.2)', 
             borderColor: '#0069b4', 
             pointBackgroundColor: '#0069b4',
@@ -69,7 +69,7 @@ const radarChartEvolucion = new Chart(ctxEvolucion, {
         datasets: [
             {
                 label: 'Inicial',
-                data: [36.25, 65, 35, 26.25, 37.5],
+                data: [0, 0, 0, 0, 0],
                 backgroundColor: 'rgba(0, 105, 180, 0.1)', 
                 borderColor: 'rgba(0, 105, 180, 0.5)', 
                 pointBackgroundColor: 'rgba(0, 105, 180, 0.8)',
@@ -85,7 +85,7 @@ const radarChartEvolucion = new Chart(ctxEvolucion, {
             },
             {
                 label: 'Evolución',
-                data: [50.00, 80.00, 60.00, 55.00, 70.00],
+                data: [0, 0, 0, 0, 0],
                 backgroundColor: 'rgba(242, 194, 0, 0.25)', 
                 borderColor: '#f2c200', 
                 pointBackgroundColor: '#f2c200',
