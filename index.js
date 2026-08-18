@@ -28,9 +28,9 @@ const radarChartInicial = new Chart(ctxInicial, {
                 color: '#0069b4',
                 anchor: 'end',
                 align: 'end',
-                offset: 4,
-                font: { family: 'Montserrat', weight: 'bold', size: 12 },
-                formatter: (value) => value.toFixed(2)
+                offset: 2,
+                font: { family: 'Montserrat', weight: 'bold', size: 11 },
+                formatter: (value) => value % 1 === 0 ? value.toFixed(0) : value.toFixed(2)
             }
         }]
     },
@@ -78,9 +78,9 @@ const radarChartEvolucion = new Chart(ctxEvolucion, {
                     color: '#0069b4',
                     anchor: 'end',
                     align: 'start',
-                    offset: 4,
-                    font: { family: 'Montserrat', weight: 'bold', size: 10 },
-                    formatter: (value) => value.toFixed(2)
+                    offset: 2,
+                    font: { family: 'Montserrat', weight: 'bold', size: 9.5 },
+                    formatter: (value) => value % 1 === 0 ? value.toFixed(0) : value.toFixed(2)
                 }
             },
             {
@@ -94,9 +94,9 @@ const radarChartEvolucion = new Chart(ctxEvolucion, {
                     color: '#cda400', 
                     anchor: 'end',
                     align: 'end',
-                    offset: 4,
-                    font: { family: 'Montserrat', weight: 'bold', size: 12 },
-                    formatter: (value) => value.toFixed(2)
+                    offset: 2,
+                    font: { family: 'Montserrat', weight: 'bold', size: 11 },
+                    formatter: (value) => value % 1 === 0 ? value.toFixed(0) : value.toFixed(2)
                 }
             }
         ]
