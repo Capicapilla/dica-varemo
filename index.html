@@ -16,41 +16,88 @@
 <div class="container">
     <h2>Evaluación de Nivel de Madurez Digital</h2>
     
-    <div id="table-capture">
+    <!-- SECCIÓN 1: EVALUACIÓN INICIAL -->
+    <div class="seccion-varemo inicial">
+        <h3 class="seccion-titulo text-azul">Evaluación Inicial</h3>
         
-        <table id="data-table">
-            <thead>
-                <tr>
-                    <th>Ejes</th>
-                    <th>Puntos</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>SEO local</td><td class="punto-val"><input type="number" class="dato" value="36.25" step="0.01"><span class="captura-texto">36.25</span></td></tr>
-                <tr><td>Web y SEO</td><td class="punto-val"><input type="number" class="dato" value="65" step="0.01"><span class="captura-texto">65.00</span></td></tr>
-                <tr><td>Venta online</td><td class="punto-val"><input type="number" class="dato" value="35" step="0.01"><span class="captura-texto">35.00</span></td></tr>
-                <tr><td>RRSS</td><td class="punto-val"><input type="number" class="dato" value="26.25" step="0.01"><span class="captura-texto">26.25</span></td></tr>
-                <tr><td>Procesos</td><td class="punto-val"><input type="number" class="dato" value="37.5" step="0.01"><span class="captura-texto">37.50</span></td></tr>
-            </tbody>
-            <tfoot>
-                <tr class="total-row">
-                    <td></td>
-                    <td id="total-val">200.00</td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+        <div id="table-capture-inicial" class="table-capture">
+            <table id="data-table-inicial" class="data-table">
+                <thead>
+                    <tr class="header-inicial">
+                        <th>Ejes</th>
+                        <th>Puntos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>SEO local</td><td class="punto-val"><input type="number" class="dato dato-inicial" value="36.25" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-inicial">36.25</span></td></tr>
+                    <tr><td>Web y SEO</td><td class="punto-val"><input type="number" class="dato dato-inicial" value="65" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-inicial">65.00</span></td></tr>
+                    <tr><td>Venta online</td><td class="punto-val"><input type="number" class="dato dato-inicial" value="35" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-inicial">35.00</span></td></tr>
+                    <tr><td>RRSS</td><td class="punto-val"><input type="number" class="dato dato-inicial" value="26.25" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-inicial">26.25</span></td></tr>
+                    <tr><td>Procesos</td><td class="punto-val"><input type="number" class="dato dato-inicial" value="37.5" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-inicial">37.50</span></td></tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row total-row-inicial">
+                        <td></td>
+                        <td id="total-val-inicial" class="total-val">200.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
 
-    <div class="actions">
-        <button onclick="descargarTabla()">Descargar Tabla PNG</button>
-    </div>
+        <div class="actions">
+            <button class="btn-inicial" onclick="descargarTablaInicial()">Descargar Tabla Inicial PNG</button>
+        </div>
 
-    <div id="canvas-container">
-        <canvas id="radarChart"></canvas>
-    </div>
+        <div class="canvas-container" id="canvas-container-inicial">
+            <canvas id="radarChartInicial"></canvas>
+        </div>
 
-    <div class="actions">
-        <button onclick="descargarGrafico()">Descargar Gráfico PNG</button>
+        <div class="actions">
+            <button class="btn-inicial" onclick="descargarGraficoInicial()">Descargar Gráfico Inicial PNG</button>
+        </div>
+    </div>
+    
+    <hr class="seccion-divider">
+    
+    <!-- SECCIÓN 2: EVOLUCIÓN -->
+    <div class="seccion-varemo evolucion">
+        <h3 class="seccion-titulo text-amarillo">Evolución / Evaluación Final</h3>
+        
+        <div id="table-capture-evolucion" class="table-capture">
+            <table id="data-table-evolucion" class="data-table">
+                <thead>
+                    <tr class="header-evolucion">
+                        <th>Ejes</th>
+                        <th>Puntos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>SEO local</td><td class="punto-val"><input type="number" class="dato dato-evolucion" value="50.00" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-evolucion">50.00</span></td></tr>
+                    <tr><td>Web y SEO</td><td class="punto-val"><input type="number" class="dato dato-evolucion" value="80.00" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-evolucion">80.00</span></td></tr>
+                    <tr><td>Venta online</td><td class="punto-val"><input type="number" class="dato dato-evolucion" value="60.00" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-evolucion">60.00</span></td></tr>
+                    <tr><td>RRSS</td><td class="punto-val"><input type="number" class="dato dato-evolucion" value="55.00" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-evolucion">55.00</span></td></tr>
+                    <tr><td>Procesos</td><td class="punto-val"><input type="number" class="dato dato-evolucion" value="70.00" step="0.01" min="0" max="100"><span class="captura-texto captura-texto-evolucion">70.00</span></td></tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row total-row-evolucion">
+                        <td></td>
+                        <td id="total-val-evolucion" class="total-val">315.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="actions">
+            <button class="btn-evolucion" onclick="descargarTablaEvolucion()">Descargar Tabla Evolución PNG</button>
+        </div>
+
+        <div class="canvas-container" id="canvas-container-evolucion">
+            <canvas id="radarChartEvolucion"></canvas>
+        </div>
+
+        <div class="actions">
+            <button class="btn-evolucion" onclick="descargarGraficoEvolucion()">Descargar Gráfico Evolución PNG</button>
+        </div>
     </div>
 </div>
 
